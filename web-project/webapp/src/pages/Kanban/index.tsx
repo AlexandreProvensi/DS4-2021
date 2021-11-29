@@ -220,11 +220,10 @@ export function Kanban() {
                 setLoading(false);
             })
     }
-
+    // Teste de commit
     return (
         <div id="page-kanban">
             <Header />
-
             <main className="container">
                 <AppBar className="app-bar" position="static">
                     <Toolbar>
