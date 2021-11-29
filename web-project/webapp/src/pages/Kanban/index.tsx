@@ -251,7 +251,7 @@ export function Kanban() {
                                 style={{ 'borderTopColor': statusColumn.color }}>
                                 <div className="kanban-header">
                                     <Typography variant="subtitle1">
-                                        {statusColumn.name}
+                                        {statusColumn.name}a
                                     </Typography>
 
                                     <Tooltip title="Adicionar tarefa">
