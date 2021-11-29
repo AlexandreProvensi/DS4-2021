@@ -1,0 +1,61 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #F8F8F8;
+    color: #29292e;
+}
+
+body, input, button, select, text, textarea {
+    font: 400 16px 'Roboto', sans-serif;
+}
+
+.toolbar {
+    display: flex;
+    padding: 0 16px;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    height: 64px;
+    white-space: nowrap;
+}
+
+.spacer{
+    flex: 1 1 auto;
+}
+
+.container {
+    margin: 0 auto;
+    display: flex;
+}
+@media (max-width: 1199.98px) {
+    .container {
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .container {
+        width: 1396px;
+    }
+}
+main {
+    max-width: 100%;
+}
+main .app-bar {
+    background-color: transparent;
+    box-shadow: none;
+    border-bottom: 2px solid #5168F0;
+
+    h5 {
+        font-weight: 300;
+        flex-grow: 1;
+    }
+
+    > div {
+        gap: 8px;
+    }
+}
