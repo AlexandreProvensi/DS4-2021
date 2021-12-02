@@ -30,7 +30,7 @@ export function Kanban() {
     const [task, setTask] = useState<Task>({} as Task);
     const [tasks, setTasks] = useState<Task[]>([] as Task[]);
 
-    const [template, setTemplate] = useState<Template[]>([] as Template[]);
+    const [template, setTemplate] = useState<Template>({} as Template);
 
     const [adding, setAdding] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -200,12 +200,21 @@ export function Kanban() {
     function handleMudarAbaAtiva(event: ChangeEvent<{}>, aba: string) {
         setAbaAtiva(aba);
     }
+    //@ts-ignore
+    function handleAddTemplate(project) {
 
-    function handleAddTemplate() {
+        const template = {
+            id: 0,
+            project: project.id,
+            amountUse: 0,
+            createdAt: Date.now(),
+            updateAd: Date.now()
+        }
+
         //Envio o novo template para o servidor
-        serverAPI.post('/template', project)
+        serverAPI.post('/templates', template)
             .then(result => {
-                setTemplate([...template, result.data]);
+                setTemplate(result.data);
 
                 setSuccess(true);
                 setMessageSuccess('Template criado com sucesso!')
@@ -220,7 +229,7 @@ export function Kanban() {
                 setLoading(false);
             })
     }
-    // Teste de commit1
+    // Teste de commit
     return (
         <div id="page-kanban">
             <Header />
@@ -232,10 +241,9 @@ export function Kanban() {
                         </Typography>
 
                         <IconButton
-                            onClick={() => handleAddTemplate()}
+                            onClick={() => handleAddTemplate(project)}
                             title="Adicionar como Template">
                             <PostAddIcon color="primary" />
-
                         </IconButton>
                     </Toolbar>
 

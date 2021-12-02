@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import { Template } from "../models/Template";
+import { Project } from "../models/Project";
 import { AppException } from '../exceptions/AppException';
 
 class TemplateController {
@@ -14,8 +15,20 @@ class TemplateController {
             //Buscar TODOS os templates do banco
             const templates = await repository.find()
 
-            //Retorno a lista de templates
-            return response.json(templates);
+            //Pego o ID do projeto que veio por request params
+            const { project } = request.params;
+
+            //Buscar o project que veio por request params
+            const projectFind = await getRepository(Project).findOne(project);
+            
+            const obj = {
+                templates,
+                projectFind
+            }
+
+            //Retorno a lista de templates, mais o objeto do projeto
+            return response.status(200).json(obj);
+
         } catch (e) {
             const error = e as AppException;
             return response.status(error.code).json(error)

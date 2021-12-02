@@ -28,6 +28,8 @@ export function Home() {
 
     const [projects, setProjects] = useState<any[]>([] as any);
 
+    const [templates, setTemplates] = useState<any[]>([] as any);
+
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
 
@@ -44,6 +46,25 @@ export function Home() {
                 console.log(error);
             })
     }, [])
+
+    //Carrego os templates criados
+    useEffect(() => {
+        //Atribui o token salvo na requisição
+        serverAPI.defaults.headers['Authorization'] = `Bearer ${token}`;
+
+        //Carrega os projetos do servidor 
+        serverAPI.get('/templates')
+            .then(result => {
+                setTemplates(result.data.projectFind);
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    }, [])
+
+    var arrayTemplates = [] as any;
+
+    arrayTemplates.push(templates);
 
     function handleNewProject() {
         setName('');
@@ -78,7 +99,7 @@ export function Home() {
         //Envio o novo projeto para o servidor
         serverAPI.post('/projects', project)
             .then(result => {
-                setProjects([...projects, result.data]);                
+                setProjects([...projects, result.data]);
                 setOpenDialog(false);
 
                 setSuccess(true);
@@ -96,6 +117,10 @@ export function Home() {
     }
 
     function handleOpenProject(project: Project): void {
+        history.push(`/projects/${project.id}`);
+    }
+
+    function handleOpenTemplate(project: Project): void {
         history.push(`/projects/${project.id}`);
     }
 
@@ -129,7 +154,7 @@ export function Home() {
                                         </InputAdornment>
                                     ),
                                 }} />
-                            
+
                             <IconButton title="Ordenar">
                                 <SortIcon color="primary" />
                             </IconButton>
@@ -137,7 +162,7 @@ export function Home() {
                         </Toolbar>
 
                     </AppBar>
-                
+
                     <div className="project-content">
                         {projects.map(project => {
                             return (
@@ -148,7 +173,7 @@ export function Home() {
                                         className="project-card">
                                         <CardActionArea
                                             onClick={() => handleOpenProject(project)}>
-                                            
+
                                             <CardContent
                                                 className="project-card-title">
                                                 {project.name.length >= 28 ? (
@@ -156,7 +181,7 @@ export function Home() {
                                                     <Tooltip title={project.name}>
                                                         <Typography variant="h6" component="span">
                                                             {`${project.name.substring(0, 25)}...`}
-                                                        </Typography>   
+                                                        </Typography>
                                                     </Tooltip>
 
                                                 ) : (
@@ -165,19 +190,70 @@ export function Home() {
                                                         {project.name}
                                                     </Typography>
 
-                                                ) }
+                                                )}
                                             </CardContent>
 
                                             <CardMedia
                                                 className="project-card-media"
-                                                image={imgBgCard}/>
-                                        </CardActionArea>    
-                                    </Card> 
+                                                image={imgBgCard} />
+                                        </CardActionArea>
+                                    </Card>
 
                                     <Avatar
                                         className="project-avatar"
-                                        src={`../assets/avatar/${project.owner.avatar}`} 
-                                        alt={project.owner.name}/>   
+                                        src={`../assets/avatar/${project.owner.avatar}`}
+                                        alt={project.owner.name} />
+                                </div>
+                            )
+                        })}
+                    </div>
+                </div>
+
+                {/* Conteúdo dos templates (abaixo dos projetos já existentes) */}
+                <div className="project-container">
+                    <AppBar className="app-bar" position="static">
+                        <Toolbar>
+                            <Typography variant="h5" color="primary">Templates</Typography>
+                        </Toolbar>
+                    </AppBar>
+
+                    <div className="project-content">
+                        {/* @ts-ignore */}
+                        {arrayTemplates.map(template => {
+                            return (
+                                <div
+                                    //@ts-ignore
+                                    key={template.id}
+                                    className="project-card-container">
+                                    <Card
+                                        className="project-card">
+                                        <CardActionArea
+                                            //@ts-ignore
+                                            onClick={() => handleOpenTemplate(template)}>
+
+                                            <CardContent
+                                                className="project-card-title">
+
+                                                {template.name ? (
+                                                    <Tooltip title={template.name}>
+                                                        <Typography variant="h6" component="span">
+                                                            {`${template.name.substring(0, 25)}...`}
+                                                        </Typography>
+                                                    </Tooltip>
+
+                                                ) : (
+                                                    <Typography component="span">
+                                                        {template.name}
+                                                    </Typography>
+
+                                                )}
+                                            </CardContent>
+
+                                            <CardMedia
+                                                className="project-card-media"
+                                                image={imgBgCard} />
+                                        </CardActionArea>
+                                    </Card>
                                 </div>
                             )
                         })}
@@ -231,7 +307,7 @@ export function Home() {
                 </DialogContent>
 
                 <DialogActions>
-                    
+
                     {loading && <CircularProgress size={24} />}
 
                     <Button
@@ -259,9 +335,9 @@ export function Home() {
                 open={success}
                 autoHideDuration={3000}
                 onClose={() => setSuccess(false)}>
-                
-                <Alert 
-                    variant="filled" 
+
+                <Alert
+                    variant="filled"
                     severity="success"
                     onClose={() => setSuccess(false)}>
                     {messageSuccess}
@@ -272,14 +348,14 @@ export function Home() {
                 open={error.type === 'exception'}
                 autoHideDuration={6000}
                 onClose={() => setError({} as ErrorType)}>
-                
-                <Alert 
-                    variant="filled" 
+
+                <Alert
+                    variant="filled"
                     severity="error"
                     onClose={() => setError({} as ErrorType)}>
                     {error.message}
                 </Alert>
-            </Snackbar>            
+            </Snackbar>
         </div>
     )
 }
